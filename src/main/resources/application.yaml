@@ -6,3 +6,6 @@ jwt:
   secret: ${JWT_SECRET:shetty123}
   expirationMs: 3600000
 
+frontend:
+  url: ${FRONTEND_URL}
+

@@ -25,17 +25,17 @@ public class DataStore {
         users.add(User.builder()
                 .userName("Admin")
                 .role("ADMIN")
-                .password("AdminPsswd")
+                .password("admin1")
                 .build());
         users.add(User.builder()
                 .userName("user1")
                 .role("USER")
-                .password("UserPsswd")
+                .password("user1")
                 .build());
         users.add(User.builder()
                 .userName("user2")
                 .role("USER")
-                .password("User2Psswd")
+                .password("user2")
                 .build());
 
         events.add(Event.builder()
@@ -112,5 +112,59 @@ public class DataStore {
     public long getNextBookingId()
     {
         return nextBookingId.getAndIncrement();
+    }
+
+    public void resetEvents() {
+        events.clear();
+        nextEventId.set(1);
+
+        events.add(Event.builder()
+                .id(nextEventId.getAndIncrement())
+                .name("Spring Music Festival")
+                .date("2024-07-15")
+                .location("Central Park")
+                .description("An outdoor celebration of music and culture.")
+                .availableSeats(100)
+                .build());
+        events.add(Event.builder()
+                .id(nextEventId.getAndIncrement())
+                .name("Tech Conference X")
+                .date("2024-08-21")
+                .location("Metro Convention Center")
+                .description("Innovative tech workshops and keynote talks.")
+                .availableSeats(250)
+                .build());
+        events.add(Event.builder()
+                .id(nextEventId.getAndIncrement())
+                .name("Stand-Up Comedy Night")
+                .date("2024-09-10")
+                .location("City Theater")
+                .description("A hilarious night with top comedians.")
+                .availableSeats(60)
+                .build());
+        events.add(Event.builder()
+                .id(nextEventId.getAndIncrement())
+                .name("Art & Food Expo")
+                .date("2024-10-05")
+                .location("Downtown Exhibition Hall")
+                .description("Explore local art while sampling gourmet foods.")
+                .availableSeats(200)
+                .build());
+        events.add(Event.builder()
+                .id(nextEventId.getAndIncrement())
+                .name("Startup Pitch Day")
+                .date("2024-10-28")
+                .location("Innovation Labs")
+                .description("Watch startups pitch to investors for big prizes.")
+                .availableSeats(150)
+                .build());
+        events.add(Event.builder()
+                .id(nextEventId.getAndIncrement())
+                .name("Annual Charity Marathon")
+                .date("2024-11-12")
+                .location("Riverside Park")
+                .description("Run for a cause and support local charities.")
+                .availableSeats(300)
+                .build());
     }
 }

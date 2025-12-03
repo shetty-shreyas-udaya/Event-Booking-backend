@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/booking")
@@ -80,6 +81,29 @@ public class BookingController {
 
 
         return ResponseEntity.ok(bookingList);
+    }
+
+    @DeleteMapping("/reset")
+    public ResponseEntity<?> clearMyBookings(HttpServletRequest req) {
+        String userName = extractUserName(req); // use your existing code
+        if (userName == null) {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+        // Collect bookings to be removed
+        List<Booking> toRemove = dataStore.getBookingsData().stream()
+                .filter(b -> b.getUserName().equals(userName))
+                .toList();
+
+        // For each, increment availableSeats on the corresponding event
+        toRemove.forEach(b -> dataStore.getEventData().stream()
+                .filter(ev -> ev.getId() == b.getEventId())
+                .findFirst()
+                .ifPresent(ev -> ev.setAvailableSeats(ev.getAvailableSeats() + 1)));
+
+        // Actually remove the bookings
+        dataStore.getBookingsData().removeIf(b -> b.getUserName().equals(userName));
+
+        return ResponseEntity.ok("Your bookings cleared, and seats restored.");
     }
 
     private String extractUserName(HttpServletRequest req)

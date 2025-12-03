@@ -36,6 +36,12 @@ public class EventController {
             return ResponseEntity.status(403).body("Forbidden:Admin only");
         }
 
+        boolean duplicateTitle = dataStore.getEventData().stream()
+                .anyMatch(e -> e.getName().equalsIgnoreCase(eventRequest.getName()));
+        if (duplicateTitle) {
+            return ResponseEntity.status(400).body("An event with this title already exists.");
+        }
+
         Event event = Event.builder()
                 .id(dataStore.getNextEventId())
                 .name(eventRequest.getName())
@@ -65,6 +71,16 @@ public class EventController {
         return ResponseEntity.ok("Event deleted");
     }
 
+    @PostMapping("/reset-events")
+    public ResponseEntity<?> resetEvents(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader != null && authHeader.startsWith("Bearer ") ? authHeader.substring(7) : "";
+        if (token.isEmpty() || !jwtService.validateToken(token) || !"ADMIN".equals(jwtService.extractRole(token))) {
+            return ResponseEntity.status(403).body("Forbidden");
+        }
+        dataStore.resetEvents(); // implement this in your DataStore
+        return ResponseEntity.ok("Events reset!");
+    }
+
     private boolean isAdmin(HttpServletRequest req)
     {
         String header = req.getHeader("Authorization");
@@ -78,5 +94,7 @@ public class EventController {
         }
         return false;
     }
+
+
 
 }
